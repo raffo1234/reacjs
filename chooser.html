@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>React - Real-time Search</title>
+
+  </head>
+  <body>
+
+    <div id="container"></div>
+
+    <script src="https://fb.me/react-15.0.0.js"></script>
+    <script src="https://fb.me/react-dom-15.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+
+    <script type="text/babel">
+      // Chooser
+
+      var Chooser = React.createClass({
+        getInitialState: function(){
+          return { total: 0 };
+        },
+        addTotal: function(price){
+          this.setState({ total: this.state.total + price })
+        },
+        render: function(){
+          var self = this;
+          var services = this.props.items.map(function(n, i){
+            return <Service key={i} name={n.name} price={n.price} active={n.active} addTotal={self.addTotal} />;
+          });
+          return (
+            <div>
+              { services }
+              <hr />
+              <p>Total: $ <b>{this.state.total.toFixed(2)}</b></p>
+            </div>
+          );
+        }
+      });
+
+      var Service = React.createClass({
+        getInitialState: function(){
+          return { active: false }
+        },
+        clickHandler: function(){
+          var active = !this.state.active;
+          this.setState({ active: active });
+          this.props.addTotal( active ? this.props.price : - this.props.price );
+        },
+        render: function(){
+          return (
+            <p className={this.state.active ? 'active' : ''} onClick={this.clickHandler}>
+              {this.props.name} <b>{this.props.price.toFixed(2)}</b>
+            </p>
+          );
+        }
+      });
+
+      var services = [
+        { name: 'Web Development', price: 300 },
+        { name: 'Design', price: 400 },
+        { name: 'Integration', price: 250 },
+        { name: 'Training', price: 220 }
+      ];
+
+      ReactDOM.render(
+        <Chooser items={ services } />,
+        document.getElementById('container')
+      );
+
+    </script>
+
+  </body>
+</html>
